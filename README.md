@@ -1,49 +1,42 @@
-# Eyring hPINN for Structure-Formulation Cure Kinetics
+# Eyring hPINN Cure Kinetics Benchmark
 
-Physics-informed neural network framework for modelling polymer curing kinetics from molecular structure and formulation composition.
+Benchmarking Arrhenius and Eyring physics-informed neural networks for structure-formulation polymer cure kinetics.
 
-This repository contains the v2 implementation of a hybrid physics-informed neural network (hPINN) for cure kinetics prediction. The model combines learned structure/formulation representations with an Eyring transition-state-theory kinetic backbone, DiBenedetto/WLF diffusion gating, dynamic synergy terms, and MC-dropout uncertainty estimation.
+This repository contains two related hPINN implementations:
+
+- `benchmarks/v1_arrhenius_hpinn/` - the frozen v1 benchmark using an Arrhenius/Kamal-Sourour-style physics backbone.
+- `hpinn_v2_eyring/` - the v2 Eyring hPINN with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
+
+The repository is organised to make the scientific comparison explicit: v1 is the baseline reference, while v2 is the newer automated model whose performance depends on physically meaningful constraints and in-domain operating conditions.
 
 ## Key Features
 
-- Structure-aware molecular encoding from SMILES descriptors.
-- Formulation-aware prediction across mixture ratios.
-- Eyring physics head for activation enthalpy and entropy terms.
-- DiBenedetto and WLF-inspired diffusion control for vitrification effects.
-- Dynamic synergy correction `syn(T, alpha)` for non-ideal mixture behaviour.
-- MC-dropout uncertainty estimates for residual kinetic corrections.
-- Leave-One-Ratio-Out and Leave-One-Molecule-Out validation workflows.
-
-## Experiments
-
-The repository includes two main validation studies:
-
-- `experiments/exp1_ratio_loro.py` - Leave-One-Ratio-Out validation for formulation-ratio generalisation.
-- `experiments/exp2_structure_lomo.py` - Leave-One-Molecule-Out validation for molecular-structure generalisation.
-
-Both scripts write timestamped outputs to `results/`, including plots, prediction tables, fitted physical parameters, and model checkpoints. The `results/` directory is intentionally ignored by git.
+- Side-by-side v1 and v2 model snapshots for reproducible benchmarking.
+- Leave-One-Ratio-Out validation for formulation-ratio generalisation.
+- Leave-One-Molecule-Out validation for molecular-structure generalisation.
+- Tri-modal molecular representation using SMILES, molecular graphs, and ECFP fingerprints.
+- Constraint-aware v2 physics head based on Eyring transition-state theory.
+- Documentation for data policy, model constraints, and version differences.
 
 ## Repository Structure
 
 ```text
 .
-├── core/
-│   ├── config.py          # Physical constants, bounds, and training settings
-│   ├── dataset.py         # Data preprocessing and PyTorch loaders
-│   ├── features.py        # SMILES and chemical feature processing
-│   ├── inference.py       # Evaluation, simulation, and uncertainty tools
-│   ├── model.py           # hPINN v2 model architecture
-│   └── trainer.py         # Curriculum training and physics penalties
+├── benchmarks/
+│   └── v1_arrhenius_hpinn/     # Frozen v1 benchmark
+├── hpinn_v2_eyring/            # Main v2 Eyring hPINN implementation
 ├── data/
-│   ├── Unified_Kinetics_Dataset_v1.csv
-│   ├── Unified_Kinetics_Dataset_MR_v1.csv
-│   └── dummy_generator.py
-├── experiments/
-│   ├── exp1_ratio_loro.py
-│   └── exp2_structure_lomo.py
+│   └── dummy/                  # Public dummy/sample data only
+├── docs/
+│   ├── constraints.md
+│   ├── data.md
+│   ├── v1_benchmark.md
+│   └── v2_eyring_model.md
 ├── requirements.txt
 └── README.md
 ```
+
+Generated experiment outputs, checkpoints, and private experimental datasets are intentionally excluded from git.
 
 ## Installation
 
@@ -53,32 +46,33 @@ Create and activate a Python environment, then install the dependencies:
 pip install -r requirements.txt
 ```
 
-PyTorch and PyTorch Geometric installation can depend on your CUDA version. If the generic install fails, install `torch` and `torch-geometric` using the platform-specific commands from their official documentation, then rerun the remaining dependency installation.
+PyTorch and PyTorch Geometric installation depends on your CUDA version. If the generic install fails, install `torch` and `torch-geometric` using the platform-specific commands from their official documentation, then rerun the remaining dependency installation.
 
 ## Quick Start
 
-Run the ratio generalisation experiment:
+Run the v1 Arrhenius benchmark:
 
 ```bash
+cd benchmarks/v1_arrhenius_hpinn
 python experiments/exp1_ratio_loro.py
-```
-
-Run the molecular-structure generalisation experiment:
-
-```bash
 python experiments/exp2_structure_lomo.py
 ```
 
-The scripts expect their input CSV files under `data/` and create new output folders under `results/`.
+Run the v2 Eyring model:
 
-## Data Availability
+```bash
+cd hpinn_v2_eyring
+python experiments/exp1_ratio_loro.py
+python experiments/exp2_structure_lomo.py
+```
 
-The current project structure supports two data modes:
+If the real CSV files are not present, the scripts generate synthetic dummy datasets using their local `data/dummy_generator.py` modules.
 
-- Public reproducibility mode: keep the input CSV files in `data/` if the datasets are cleared for public release.
-- Code-only release mode: remove private or unpublished experimental datasets from `data/`, keep `dummy_ratio_dataset.csv`, and document how approved users can request access to the real data.
+## Data Policy
 
-Generated experiment outputs, trained checkpoints, and large result folders should not be committed. They are excluded through `.gitignore`.
+The real cure-kinetics datasets are not included in the current public layout. They contain molecular structures, formulation ratios, thermal conditions, conversion, and rate values, so they should only be released if they are cleared for publication and sharing.
+
+For public demonstration and CI-style testing, use the dummy data under `data/dummy/` or the version-local dummy generators. See `docs/data.md` for the expected schema.
 
 ## Citation
 
@@ -95,4 +89,4 @@ If this code supports a publication, add the preferred citation here before rele
 
 ## License
 
-Add a license before wider release. If the intention is an open academic software release, MIT is a common choice and matches the style of the related `Kinetics-Digital-Twin` repository.
+This repository is released under the MIT License. See `LICENSE`.

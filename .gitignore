@@ -18,10 +18,15 @@ env/
 Thumbs.db
 
 # Generated experiment outputs and model checkpoints
-results/
+**/results/**
+!results/README.md
 *.pt
 *.pth
 *.ckpt
+
+# Private or unpublished experimental datasets
+hpinn_v2_eyring/data/*.csv
+benchmarks/v1_arrhenius_hpinn/data/*.csv
 
 # Notebook checkpoints
 .ipynb_checkpoints/
