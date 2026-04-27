@@ -1,8 +1,14 @@
-# Eyring hPINN Cure Kinetics Benchmark
+# Eyring-hPINN-Cure-Kinetics
 
-Benchmarking Arrhenius and Eyring physics-informed neural networks for structure-formulation polymer cure kinetics.
+Hybrid physics-informed benchmark for polymer cure kinetics, comparing a frozen v1 Arrhenius hPINN with a v2 Eyring hPINN for structure-formulation generalisation.
 
-This repository contains two related hPINN implementations:
+This repository benchmarks two related hPINN implementations for polymer curing kinetics. The v1 model provides a stable Arrhenius/Kamal-Sourour reference, while the v2 model introduces an automated Eyring transition-state-theory backbone with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
+
+Suggested GitHub description:
+
+> Benchmarking Arrhenius and Eyring physics-informed neural networks for polymer cure kinetics with structure-formulation inputs, LORO/LOMO validation, and constraint-aware uncertainty estimation.
+
+## Model Versions
 
 - `benchmarks/v1_arrhenius_hpinn/` - the frozen v1 benchmark using an Arrhenius/Kamal-Sourour-style physics backbone.
 - `hpinn_v2_eyring/` - the v2 Eyring hPINN with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
