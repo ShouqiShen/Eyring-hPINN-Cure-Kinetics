@@ -23,18 +23,40 @@ splitting, and MC-Dropout inference — runs end-to-end without the private
 dataset. This makes the repository useful as a methodology template for other
 groups working under similar industrial-data constraints.
 
+## Why this exists
+
+This repository is a public reference implementation accompanying the v2 hPINN
+manuscript on polymer cure kinetics. It is deliberately structured so that the
+**methodology** — physics backbone, validation protocol, and uncertainty
+estimation — can be reproduced and benchmarked even when the underlying
+experimental dataset is under industrial IP review and cannot yet be released.
+
+The repository pairs two model versions with a strict benchmarking discipline:
+
+- **v1 (frozen):** an Arrhenius / Kamal–Sourour hPINN that serves as the
+  field-standard empirical baseline.
+- **v2 (active):** an Eyring transition-state-theory hPINN with diffusion
+  gating, dynamic synergy, and MC-Dropout uncertainty estimation.
+
+Both versions are exercised under the same Leave-One-Ratio-Out (LORO) and
+Leave-One-Molecule-Out (LOMO) splits, so any claimed improvement of v2 over
+v1 must come from physics, not from data leakage or test-set drift.
+
+Dummy data generators are bundled so the full pipeline — training, LORO/LOMO
+splitting, and MC-Dropout inference — runs end-to-end without the private
+dataset. This makes the repository useful as a methodology template for other
+groups working under similar industrial-data constraints.
+
+## Overview
+
 Hybrid physics-informed benchmark for polymer cure kinetics, comparing a frozen v1 Arrhenius hPINN with a v2 Eyring hPINN for structure-formulation generalisation.
 
 This repository benchmarks two related hPINN implementations for polymer curing kinetics. The v1 model provides a stable Arrhenius/Kamal-Sourour reference, while the v2 model introduces an automated Eyring transition-state-theory backbone with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
 
-Suggested GitHub description:
-
-> Benchmarking Arrhenius and Eyring physics-informed neural networks for polymer cure kinetics with structure-formulation inputs, LORO/LOMO validation, and constraint-aware uncertainty estimation.
-
 ## Model Versions
 
-- `benchmarks/v1_arrhenius_hpinn/` - the frozen v1 benchmark using an Arrhenius/Kamal-Sourour-style physics backbone.
-- `hpinn_v2_eyring/` - the v2 Eyring hPINN with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
+- `benchmarks/v1_arrhenius_hpinn/` — the frozen v1 benchmark using an Arrhenius/Kamal-Sourour-style physics backbone.
+- `hpinn_v2_eyring/` — the v2 Eyring hPINN with diffusion gating, dynamic synergy, and MC-dropout uncertainty estimation.
 
 The repository is organised to make the scientific comparison explicit: v1 is the baseline reference, while v2 is the newer automated model whose performance depends on physically meaningful constraints and in-domain operating conditions.
 
@@ -49,7 +71,7 @@ The repository is organised to make the scientific comparison explicit: v1 is th
 
 ## Repository Structure
 
-```text
+```
 .
 ├── benchmarks/
 │   └── v1_arrhenius_hpinn/     # Frozen v1 benchmark
@@ -115,6 +137,42 @@ If this code supports a publication, add the preferred citation here before rele
   year    = {2026}
 }
 ```
+
+## Roadmap
+
+This repository is currently a **public reference implementation**, not a
+packaged tool. The intended progression toward a JOSS-style software
+release is staged as follows:
+
+### Near term (manuscript companion)
+- [ ] Unit tests for the physics layers (Arrhenius rate law, Eyring rate law,
+      diffusion gating, MC-Dropout sampling).
+- [ ] Continuous integration (GitHub Actions) running the dummy-data pipeline
+      on each push.
+- [ ] API documentation for the v2 model head and the LORO / LOMO split
+      utilities.
+- [ ] Pinned environment specification (`environment.yml` or `pixi.toml`)
+      alongside the current `requirements.txt`.
+- [ ] Tagged release with a Zenodo DOI for citeability.
+
+### Medium term (community release)
+- [ ] Refactor the v2 physics head into a reusable module that accepts an
+      arbitrary user-defined rate law, so the framework generalises beyond
+      cure kinetics.
+- [ ] Calibration diagnostics for the MC-Dropout uncertainty (reliability
+      diagrams, sharpness vs. calibration trade-off).
+- [ ] Optional deep-ensemble backend as an alternative UQ pathway, for
+      comparison against MC-Dropout on the same splits.
+- [ ] Worked example notebook showing how to plug a new molecular dataset
+      into the LORO / LOMO infrastructure.
+
+### Long term (release as a JOSS submission)
+- [ ] Full API documentation site (mkdocs / Sphinx).
+- [ ] Coverage of representative downstream use cases beyond polymer cure
+      kinetics (e.g. degradation kinetics, ion transport activation).
+- [ ] JOSS paper draft and submission.
+
+Contributions, issues, and discussion are welcome via the GitHub issue tracker.
 
 ## License
 
