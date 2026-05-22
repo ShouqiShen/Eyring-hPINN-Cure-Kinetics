@@ -1,4 +1,27 @@
 # Eyring-hPINN-Cure-Kinetics
+## Why this exists
+
+This repository is a public reference implementation accompanying the v2 hPINN
+manuscript on polymer cure kinetics. It is deliberately structured so that the
+**methodology** — physics backbone, validation protocol, and uncertainty
+estimation — can be reproduced and benchmarked even when the underlying
+experimental dataset is under industrial IP review and cannot yet be released.
+
+The repository pairs two model versions with a strict benchmarking discipline:
+
+- **v1 (frozen):** an Arrhenius / Kamal–Sourour hPINN that serves as the
+  field-standard empirical baseline.
+- **v2 (active):** an Eyring transition-state-theory hPINN with diffusion
+  gating, dynamic synergy, and MC-Dropout uncertainty estimation.
+
+Both versions are exercised under the same Leave-One-Ratio-Out (LORO) and
+Leave-One-Molecule-Out (LOMO) splits, so any claimed improvement of v2 over
+v1 must come from physics, not from data leakage or test-set drift.
+
+Dummy data generators are bundled so the full pipeline — training, LORO/LOMO
+splitting, and MC-Dropout inference — runs end-to-end without the private
+dataset. This makes the repository useful as a methodology template for other
+groups working under similar industrial-data constraints.
 
 Hybrid physics-informed benchmark for polymer cure kinetics, comparing a frozen v1 Arrhenius hPINN with a v2 Eyring hPINN for structure-formulation generalisation.
 
